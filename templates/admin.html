@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block title %}管理面板 - 联机聊天{% endblock %}
+{% block content %}
+{% if not authed %}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>管理面板</h1>
+            <p>输入管理员密码</p>
+        </div>
+        <form class="auth-form" onsubmit="return adminLogin(event)">
+            <div class="form-group">
+                <label for="adminPw">密码</label>
+                <input type="password" id="adminPw" required placeholder="管理员密码">
+            </div>
+            <div id="adminLoginError" class="error-msg" style="display:none"></div>
+            <button type="submit" class="btn btn-primary btn-full">进入管理面板</button>
+        </form>
+        <div class="auth-links">
+            <a href="/">← 返回聊天</a>
+        </div>
+    </div>
+</div>
+{% else %}
+<div id="adminApp">
+    <header class="admin-header">
+        <h1>⚙ 管理面板</h1>
+        <div class="admin-header-info">
+            <a href="/" class="btn btn-sm">← 返回聊天</a>
+        </div>
+    </header>
+    <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="users" onclick="switchAdminTab('users')">用户管理</button>
+        <button class="admin-tab" data-tab="logs" onclick="switchAdminTab('logs')">聊天记录</button>
+        <button class="admin-tab" data-tab="online" onclick="switchAdminTab('online')">在线列表</button>
+        <button class="admin-tab" data-tab="settings" onclick="switchAdminTab('settings')">修改密码</button>
+    </div>
+    <div class="admin-content">
+        <div id="admin-tab-users" class="admin-tab-content active">
+            <div class="admin-toolbar">
+                <input type="text" id="userSearch" placeholder="搜索用户..." oninput="filterUsers()">
+                <button class="btn btn-secondary" onclick="refreshUsers()">🔄 刷新</button>
+            </div>
+            <div class="table-wrap">
+                <table id="userTable">
+                    <thead>
+                        <tr><th onclick="sortBy('id')" style="cursor:pointer">ID<span id="sort-id"></span></th><th onclick="sortBy('username')" style="cursor:pointer">用户名<span id="sort-username"></span></th><th onclick="sortBy('nickname')" style="cursor:pointer">昵称<span id="sort-nickname"></span></th><th>邮箱</th><th onclick="sortBy('status')" style="cursor:pointer">状态<span id="sort-status"></span></th><th>注册时间</th><th>操作</th></tr>
+                    </thead>
+                    <tbody id="userTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="admin-tab-logs" class="admin-tab-content">
+            <div class="admin-toolbar">
+                <span>全部聊天记录（实时更新）</span>
+                <button class="btn btn-secondary" onclick="exportLogs()">📥 导出</button>
+            </div>
+            <div id="logMessages" class="monitor-box"></div>
+        </div>
+        <div id="admin-tab-online" class="admin-tab-content">
+            <div class="admin-toolbar">
+                <span>当前在线用户</span>
+                <button class="btn btn-secondary" onclick="refreshOnline()">🔄 刷新</button>
+            </div>
+            <div id="onlineUsers" class="online-grid"></div>
+        </div>
+        <div id="admin-tab-settings" class="admin-tab-content">
+            <div class="panel-container" style="max-width:400px;margin:0 auto">
+                <h3>修改管理员密码</h3>
+                <form class="profile-form" onsubmit="return changeAdminPassword(event)">
+                    <div class="form-group">
+                        <label for="oldAdminPw">原密码</label>
+                        <input type="password" id="oldAdminPw" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newAdminPw">新密码（至少6位）</label>
+                        <input type="password" id="newAdminPw" required minlength="6">
+                    </div>
+                    <div id="adminPwError" class="error-msg" style="display:none"></div>
+                    <div id="adminPwSuccess" class="success-msg" style="display:none"></div>
+                    <button type="submit" class="btn btn-primary btn-full">修改密码</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/app.js"></script>
+<script src="/static/js/admin.js"></script>
+{% endblock %}

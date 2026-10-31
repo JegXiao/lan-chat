@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}个人信息 - 联机聊天{% endblock %}
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card" style="max-width:450px">
+        <div class="auth-header">
+            <h1>个人信息</h1>
+            <p><a href="/">← 返回聊天</a></p>
+        </div>
+        <form id="profileForm" class="auth-form" onsubmit="return updateProfile(event)">
+            <div class="form-group">
+                <label>用户名</label>
+                <input type="text" value="{{ user.username }}" disabled>
+            </div>
+            <div class="form-group">
+                <label for="nickname">昵称</label>
+                <input type="text" id="nickname" name="nickname" value="{{ user.nickname }}" maxlength="20">
+            </div>
+            <div class="form-group">
+                <label for="email">邮箱</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}">
+            </div>
+            <div id="profileError" class="error-msg" style="display:none"></div>
+            <div id="profileSuccess" class="success-msg" style="display:none"></div>
+            <button type="submit" class="btn btn-primary btn-full">保存修改</button>
+        </form>
+        <hr>
+        <h4>修改密码</h4>
+        <form class="auth-form" onsubmit="return changePassword(event)">
+            <div class="form-group">
+                <label for="oldPassword">原密码</label>
+                <input type="password" id="oldPassword" required>
+            </div>
+            <div class="form-group">
+                <label for="newPassword">新密码</label>
+                <input type="password" id="newPassword" required minlength="6">
+            </div>
+            <div id="pwError" class="error-msg" style="display:none"></div>
+            <div id="pwSuccess" class="success-msg" style="display:none"></div>
+            <button type="submit" class="btn btn-primary btn-full">修改密码</button>
+        </form>
+        <hr>
+        <button class="btn btn-danger btn-full" onclick="deleteAccount()">注销账号</button>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/app.js"></script>
+{% endblock %}

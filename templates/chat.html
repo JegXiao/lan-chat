@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}聊天 - 联机聊天{% endblock %}
+{% block extra_head %}
+<meta name="user-data" data-username="{{ user.username }}" data-nickname="{{ user.nickname }}" data-token="{{ ws_token }}">
+{% endblock %}
+{% block content %}
+<div id="app">
+    <!-- Desktop Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>联机聊天</h2>
+            <div class="user-info-sidebar">
+                <span class="user-nickname">{{ user.nickname or user.username }}</span>
+                <span class="user-name">@{{ user.username }}</span>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-btn active" data-tab="chat" onclick="switchTab('chat')">
+                <span class="nav-icon">💬</span> 聊天
+            </button>
+            <button class="nav-btn" data-tab="online" onclick="switchTab('online')">
+                <span class="nav-icon">👥</span> 在线
+                <span id="onlineCount" class="badge">0</span>
+            </button>
+            <button class="nav-btn" data-tab="profile" onclick="switchTab('profile')">
+                <span class="nav-icon">👤</span> 个人信息
+            </button>
+        </nav>
+
+    </aside>
+
+    <!-- Main Content -->
+    <main id="main-content" class="main-content">
+        <!-- Chat Tab -->
+        <div id="tab-chat" class="tab-content active">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h3>公共聊天室</h3>
+                    <span id="connStatus" class="status offline">未连接</span>
+                </div>
+                <div id="messages" class="messages"></div>
+                <div class="chat-input">
+                    <textarea id="msgInput" rows="1" placeholder="输入消息..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"></textarea>
+                    <button id="sendBtn" onclick="sendMessage()">发送</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Online Tab -->
+        <div id="tab-online" class="tab-content">
+            <div class="panel-container">
+                <h3>在线用户</h3>
+                <div id="onlineList" class="online-list">
+                    <p class="empty-hint">暂无在线用户</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Tab -->
+        <div id="tab-profile" class="tab-content">
+            <div class="panel-container">
+                <h3>个人信息</h3>
+                <form id="profileForm" class="profile-form" onsubmit="return updateProfile(event)">
+                    <div class="form-group">
+                        <label>用户名</label>
+                        <input type="text" value="{{ user.username }}" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="nickname">昵称</label>
+                        <input type="text" id="nickname" name="nickname" value="{{ user.nickname }}" maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">邮箱</label>
+                        <input type="email" id="email" name="email" value="{{ user.email }}">
+                    </div>
+                    <div id="profileError" class="error-msg" style="display:none"></div>
+                    <div id="profileSuccess" class="success-msg" style="display:none"></div>
+                    <button type="submit" class="btn btn-primary btn-full">保存修改</button>
+                </form>
+                <hr>
+                <h4>修改密码</h4>
+                <form class="profile-form" onsubmit="return changePassword(event)">
+                    <div class="form-group">
+                        <label for="oldPassword">原密码</label>
+                        <input type="password" id="oldPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">新密码</label>
+                        <input type="password" id="newPassword" required minlength="6">
+                    </div>
+                    <div id="pwError" class="error-msg" style="display:none"></div>
+                    <div id="pwSuccess" class="success-msg" style="display:none"></div>
+                    <button type="submit" class="btn btn-primary btn-full">修改密码</button>
+                </form>
+                <hr>
+                <button class="btn btn-secondary btn-full" onclick="logout()">退出登录</button>
+                <hr>
+                <button class="btn btn-danger btn-full" onclick="deleteAccount()">注销账号</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Bottom Nav -->
+    <nav id="bottomNav" class="bottom-nav">
+        <button class="nav-item active" data-tab="chat" onclick="switchTab('chat')">
+            <span class="nav-icon">💬</span>
+            <span class="nav-label">聊天</span>
+        </button>
+        <button class="nav-item" data-tab="online" onclick="switchTab('online')">
+            <span class="nav-icon">👥</span>
+            <span class="nav-label">在线 <span id="onlineCountMobile" class="badge-mobile">0</span></span>
+        </button>
+        <button class="nav-item" data-tab="profile" onclick="switchTab('profile')">
+            <span class="nav-icon">👤</span>
+            <span class="nav-label">我的</span>
+        </button>
+    </nav>
+</div>
+{% endblock %}
+{% block scripts %}
+<script src="/static/js/app.js"></script>
+{% endblock %}
