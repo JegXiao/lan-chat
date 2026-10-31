@@ -2,7 +2,7 @@
 
 > 带注册登录的局域网聊天室：FastAPI + WebSocket 实时公聊，配网页管理面板与桌面超级管理员工具。仅供可信局域网使用。
 
-**简体中文** · [ English](#english)
+**中文** · [ English](#english)
 
 ---
 
